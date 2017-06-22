@@ -1,6 +1,6 @@
 {
-  "name": "ng-component-builder",
-  "version": "1.0.0",
+  "name": "generator-ng-component-es5",
+  "version": "0.0.1",
   "description": "Component Builder for Angular JS",
   "main": "index.js",
   "scripts": {
@@ -8,19 +8,21 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/vallejos/ng-component-builder.git"
+    "url": "git+https://github.com/vallejos/generator-ng-component-es5.git"
   },
   "keywords": [
+    "yeoman-generator",
     "angular",
     "component",
-    "angularjs",
     "javascript",
-    "builder"
+    "builder",
+    "scaffold",
+    "generator"
   ],
   "author": "Fabian Vallejos <vallejosfab@gmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/vallejos/ng-component-builder/issues"
+    "url": "https://github.com/vallejos/generator-ng-component-es5/issues"
   },
-  "homepage": "https://github.com/vallejos/ng-component-builder#readme"
+  "homepage": "https://github.com/vallejos/generator-ng-component-es5#readme"
 }
