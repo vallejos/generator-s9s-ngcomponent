@@ -1,0 +1,26 @@
+{
+  "name": "ng-component-builder",
+  "version": "1.0.0",
+  "description": "Component Builder for Angular JS",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vallejos/ng-component-builder.git"
+  },
+  "keywords": [
+    "angular",
+    "component",
+    "angularjs",
+    "javascript",
+    "builder"
+  ],
+  "author": "Fabian Vallejos <vallejosfab@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/vallejos/ng-component-builder/issues"
+  },
+  "homepage": "https://github.com/vallejos/ng-component-builder#readme"
+}
