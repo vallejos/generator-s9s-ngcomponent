@@ -1,14 +1,14 @@
 {
-  "name": "generator-ng-component-es5",
-  "version": "0.0.2",
-  "description": "Component Builder for Angular JS",
+  "name": "generator-s9s-ngcomponent",
+  "version": "0.0.1",
+  "description": "S9S yeoman generator for Angular components",
   "main": "index.js",
   "scripts": {
-    "test": "npm test"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/vallejos/generator-ng-component-es5.git"
+    "url": "git+https://github.com/vallejos/generator-s9s-ngcomponent.git"
   },
   "keywords": [
     "yeoman-generator",
@@ -22,7 +22,15 @@
   "author": "Fabian Vallejos <vallejosfab@gmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/vallejos/generator-ng-component-es5/issues"
+    "url": "https://github.com/vallejos/generator-s9s-ngcomponent/issues"
   },
-  "homepage": "https://github.com/vallejos/generator-ng-component-es5#readme"
+  "homepage": "https://github.com/vallejos/generator-s9s-ngcomponent#readme",
+  "dependencies": {
+    "decamelize": "^1.2.0",
+    "uppercamelcase": "^3.0.0",
+    "yeoman-generator": "^1.1.1"
+  },
+  "files": [
+    "app"
+  ]
 }
