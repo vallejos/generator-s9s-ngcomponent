@@ -1,6 +1,6 @@
 {
   "name": "generator-s9s-ngcomponent",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "S9S yeoman generator for Angular components",
   "main": "index.js",
   "scripts": {

@@ -90,6 +90,8 @@ Includes:
 
 # Credits
 Fabian Vallejos <vallejosfab@gmail.com>
+Twitter: https://twitter.com/vallejosfab
+Blog: http://www.fabianvallejos.com/
 
 # Licence
 MIT
