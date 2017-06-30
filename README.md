@@ -11,12 +11,12 @@ Second, install Yeoman. More information about Yeoman: http://yeoman.io/
 
 # Installation
 ```
-$ npm install -g generator-ng-component-es5
+$ npm install -g generator-s9s-ngcomponent
 ```
 
 # Usage
 ```
-$ yo ng-component-es5
+$ yo s9s-ngcomponent
 ```
 
 # What does this generator do?
@@ -90,7 +90,9 @@ Includes:
 
 # Credits
 Fabian Vallejos <vallejosfab@gmail.com>
+
 Twitter: https://twitter.com/vallejosfab
+
 Blog: http://www.fabianvallejos.com/
 
 # Licence
