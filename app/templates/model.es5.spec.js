@@ -31,7 +31,7 @@ describe('<%= modelName %> Model', function () {
 
     // test the model
     it('should exist', function () {
-        expect(ClusterDashboard).toBeDefined();
+        expect(<%= model %>).toBeDefined();
     });
 
     // test each model method
