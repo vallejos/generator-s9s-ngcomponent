@@ -5,8 +5,9 @@ const Generator = require('yeoman-generator');
 const upperCamelCase = require('uppercamelcase');
 const decamelize = require('decamelize');
 
-const defaultAppName = 'ngApp';
-const defaultTplPreffix = '/clustercontrol/app/webroot/js/ngApp';
+const defaultAppName = 'myApp';
+const defaultTplPreffix = '/myApp/client';
+const defaultParent = '';
 
 module.exports = class extends Generator {
     constructor(args, opts) {
@@ -40,35 +41,52 @@ module.exports = class extends Generator {
                 type    : 'list',
                 choices : ['es5'],
                 name    : 'lang',
-                message : 'Choose the JS version: '
+                message : 'Choose the JS version: ',
+                store   : true
             },
             {
                 type    : 'input',
                 name    : 'ngApp',
-                message : 'Enter the name for the Angular app (i.e.: ngApp): '
+                message : 'Enter the name for the Angular app (i.e.: myApp): ',
+                store   : true
+            },
+            {
+                type    : 'input',
+                name    : 'parent',
+                message : 'Enter the name for the parent module: '
             },
             {
                 type    : 'input',
                 name    : 'preffix',
-                message : 'Customize the templateUrl for the components (i.e.: /clustercontrol/app/webroot/js/ngApp): '
+                message : 'Customize the templateUrl for the components (i.e.: /myApp/client): ',
+                store   : true
             },
         ]).then( (answers) => {
+            // remove unwanted blank spaces
+            answers.name = answers.name.trim();
+            answers.ngApp = answers.ngApp.trim();
+            answers.preffix = answers.preffix.trim();
+            answers.parent = answers.parent.trim();
+
             // create destination folder
             this.destinationRoot(answers.name);
 
             // check lang spec support
             if (answers.lang !== 'es5') {
+                // only es5 now, es6 coming soon!
                 this.log('ERROR: Unsupported JS Specification: ' + answers.lang);
             }
 
             answers.ngApp = answers.ngApp || defaultAppName;
             answers.preffix = answers.preffix || defaultTplPreffix;
+            answers.parent = answers.parent || defaultParent;
 
             let controllerName = upperCamelCase(answers.name + 'Controller');
             let serviceName = upperCamelCase(answers.name + 'Service');
             let modelName = upperCamelCase(answers.name + 'Model');
             let model = upperCamelCase(answers.name);
-            let moduleName = answers.ngApp + '.module.' + answers.name;
+            let moduleName = (answers.parent !== '') ? answers.ngApp + '.' + answers.parent + '.' + answers.name : 
+                                answers.ngApp + '.' + answers.name;
             let tplPreffix = answers.preffix;
             let tplModuleName = answers.ngApp + '.templates';
             let htmlElementName = decamelize(answers.name, '-');

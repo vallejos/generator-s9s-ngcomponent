@@ -3,5 +3,13 @@
     "promptValues": {
       "componentName": "asd"
     }
+  },
+  "generator-s9s-ngcomponent": {
+    "promptValues": {
+      "lang": "es5",
+      "ngApp": "ngApp",
+      "parent": "testm",
+      "preffix": "/clustercontasdasda/asd"
+    }
   }
 }
