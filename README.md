@@ -1,6 +1,7 @@
 
 # A basic component builder for Angular JS 1.x
 This yeoman generator will build different Angular components, creating a skeleton for the different files, and adding some basic JSDoc documentation blocks.
+Since version 0.0.6 from July 2018, I have added support for ES6 and the default since this version is ES6. ES5 can still be chosen using the `lang` parameter.
 
 # Requirements
 This is a Yeoman generator. You need to install Yeoman, NodeJS and npm to install the generator and its dependencies. Make sure you have all installed globally.
