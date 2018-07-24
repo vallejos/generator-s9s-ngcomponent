@@ -8,6 +8,7 @@ const decamelize = require('decamelize');
 const defaultAppName = 'myApp';
 const defaultTplPreffix = '/myApp/client';
 const defaultParent = '';
+const defaultLang = 'es6';
 
 module.exports = class extends Generator {
     constructor(args, opts) {
@@ -64,31 +65,29 @@ module.exports = class extends Generator {
         ]).then( (answers) => {
             // remove unwanted blank spaces
             answers.name = answers.name.trim();
-            answers.ngApp = answers.ngApp.trim();
-            answers.preffix = answers.preffix.trim();
-            answers.parent = answers.parent.trim();
+            answers.ngApp = answers.ngApp.trim() || defaultAppName;
+            answers.preffix = answers.preffix.trim() || defaultTplPreffix;
+            answers.parent = answers.parent.trim() || defaultParent;
+            answers.lang = answers.lang.toLowerCase().trim();
 
             // create destination folder
             this.destinationRoot(answers.name);
 
             // check lang spec support
-            if (!choices.includes(answers.lang)) {
-                // only es5 now, es6 coming soon!
-                this.log('ERROR: Unsupported JS Specification: ' + answers.lang);
+            if (answers.lang !== 'es5' && answers.lang !== 'es6') {
+                // es5 and es6 supported
+                this.log(`ERROR: Unsupported JS Specification: ${answers.lang}`);
             }
 
-            answers.ngApp = answers.ngApp || defaultAppName;
-            answers.preffix = answers.preffix || defaultTplPreffix;
-            answers.parent = answers.parent || defaultParent;
-
-            let controllerName = upperCamelCase(answers.name + 'Controller');
-            let serviceName = upperCamelCase(answers.name + 'Service');
-            let modelName = upperCamelCase(answers.name + 'Model');
+            let controllerName = upperCamelCase(`${answers.name}Controller`);
+            let serviceName = upperCamelCase(`${answers.name}Service`);
+            let modelName = upperCamelCase(`${answers.name}Model`);
             let model = upperCamelCase(answers.name);
-            let moduleName = (answers.parent !== '') ? answers.ngApp + '.' + answers.parent + '.' + answers.name : 
-                                answers.ngApp + '.' + answers.name;
+            let moduleName = (answers.parent !== '') ? 
+                                `${answers.ngApp}.${answers.parent}.${answers.name}` : 
+                                `${answers.ngApp}.${answers.name}`;
             let tplPreffix = answers.preffix;
-            let tplModuleName = answers.ngApp + '.templates';
+            let tplModuleName = `${answers.ngApp}.templates`;
             let htmlElementName = decamelize(answers.name, '-');
             let className = decamelize(answers.name, '-');
 
@@ -135,11 +134,10 @@ module.exports = class extends Generator {
         });
     }
 
-
     _writeStyles(name, className) {
         this.fs.copyTpl(
             this.templatePath('template.scss'),
-            this.destinationPath(name + '.scss'),
+            this.destinationPath(`${name}.scss`),
             { className: className, componentName: name }
         );
     }
@@ -147,7 +145,7 @@ module.exports = class extends Generator {
     _writeHtml(name, className) {
         this.fs.copyTpl(
             this.templatePath('template.html'),
-            this.destinationPath(name + '.html'),
+            this.destinationPath(`${name}.html`),
             { className: className }
         );
     }
@@ -162,8 +160,8 @@ module.exports = class extends Generator {
 
     _writeModule(name, lang, module) {
         this.fs.copyTpl(
-            this.templatePath('module.' + lang + '.js'),
-            this.destinationPath(name + '.module.js'),
+            this.templatePath(`module.${lang}.js`),
+            this.destinationPath(`${name}.module.js`),
             { componentName: name, moduleName: module }
         );
     }
@@ -171,8 +169,8 @@ module.exports = class extends Generator {
     _writeComponent(name, lang, controller, module, tplPreffix, tplModule, htmlElement, className) {
         // copy component
         this.fs.copyTpl(
-            this.templatePath('component.' + lang + '.js'),
-            this.destinationPath(name + '.component.js'),
+            this.templatePath(`component.${lang}.js`),
+            this.destinationPath(`${name}.component.js`),
             {
                 componentName: name, 
                 moduleName: module, 
@@ -183,8 +181,8 @@ module.exports = class extends Generator {
 
         // copy specs for component
         this.fs.copyTpl(
-            this.templatePath('component.' + lang + '.spec.js'),
-            this.destinationPath(name + '.component.spec.js'),
+            this.templatePath(`component.${lang}.spec.js`),
+            this.destinationPath(`${name}.component.spec.js`),
             {
                 componentName: name,
                 moduleName: module,
@@ -200,8 +198,8 @@ module.exports = class extends Generator {
     _writeDirective(name, lang, controller, module, tplPreffix, tplModule, htmlElement, className) {
         // copy directive
         this.fs.copyTpl(
-            this.templatePath('directive.' + lang + '.js'),
-            this.destinationPath(name + '.directive.js'),
+            this.templatePath(`directive.${lang}.js`),
+            this.destinationPath(`${name}.directive.js`),
             {
                 componentName: name, 
                 moduleName: module, 
@@ -212,8 +210,8 @@ module.exports = class extends Generator {
 
         // copy specs for directive
         this.fs.copyTpl(
-            this.templatePath('directive.' + lang + '.spec.js'),
-            this.destinationPath(name + '.directive.spec.js'),
+            this.templatePath(`directive.${lang}.spec.js`),
+            this.destinationPath(`${name}.directive.spec.js`),
             {
                 componentName: name,
                 moduleName: module,
@@ -229,15 +227,15 @@ module.exports = class extends Generator {
     _writeController(name, lang, controller, module) {
         // copy controller
         this.fs.copyTpl(
-            this.templatePath('controller.' + lang + '.js'),
-            this.destinationPath(name + '.controller.js'),
+            this.templatePath(`controller.${lang}.js`),
+            this.destinationPath(`${name}.controller.js`),
             { componentName: name, moduleName: module, controllerName: controller }
         );
 
         // copy specs for controller
         this.fs.copyTpl(
-            this.templatePath('controller.' + lang + '.spec.js'),
-            this.destinationPath(name + '.controller.spec.js'),
+            this.templatePath(`controller.${lang}.spec.js`),
+            this.destinationPath(`${name}.controller.spec.js`),
             { componentName: name, moduleName: module, controllerName: controller }
         );
     }
@@ -245,15 +243,15 @@ module.exports = class extends Generator {
     _writeService(name, lang, service, module) {
         // copy service
         this.fs.copyTpl(
-            this.templatePath('service.' + lang + '.js'),
-            this.destinationPath(name + '.service.js'),
+            this.templatePath(`service.${lang}.js`),
+            this.destinationPath(`${name}.service.js`),
             { componentName: name, moduleName: module, serviceName: service }
         );
 
         // copy specs for service
         this.fs.copyTpl(
-            this.templatePath('service.' + lang + '.spec.js'),
-            this.destinationPath(name + '.service.spec.js'),
+            this.templatePath(`service.${lang}.spec.js`),
+            this.destinationPath(nam`${name}.service.spec.js`),
             { componentName: name, moduleName: module, serviceName: service }
         );
     }
@@ -261,15 +259,15 @@ module.exports = class extends Generator {
     _writeModel(name, lang, modelName, module, model) {
         // copy model
         this.fs.copyTpl(
-            this.templatePath('model.' + lang + '.js'),
-            this.destinationPath(name + '.model.js'),
+            this.templatePath(`model.${lang}.js`),
+            this.destinationPath(`${name}.model.js`),
             { componentName: name, moduleName: module, modelName: modelName, model: model }
         );
 
         // copy specs for model
         this.fs.copyTpl(
-            this.templatePath('model.' + lang + '.spec.js'),
-            this.destinationPath(name + '.model.spec.js'),
+            this.templatePath(`model.${lang}.spec.js`),
+            this.destinationPath(`${name}.model.spec.js`),
             { componentName: name, moduleName: module, modelName: modelName, model: model }
         );
     }
