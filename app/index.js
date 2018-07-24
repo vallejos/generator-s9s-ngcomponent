@@ -39,7 +39,7 @@ module.exports = class extends Generator {
             },
             {
                 type    : 'list',
-                choices : ['es5'],
+                choices : ['es6', 'es5'],
                 name    : 'lang',
                 message : 'Choose the JS version: ',
                 store   : true
@@ -72,7 +72,7 @@ module.exports = class extends Generator {
             this.destinationRoot(answers.name);
 
             // check lang spec support
-            if (answers.lang !== 'es5') {
+            if (!choices.includes(answers.lang)) {
                 // only es5 now, es6 coming soon!
                 this.log('ERROR: Unsupported JS Specification: ' + answers.lang);
             }

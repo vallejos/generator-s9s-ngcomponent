@@ -27,7 +27,7 @@
          * <%= model %> Model
          * @type {Immutable.Record}
          */
-        var <%= model %> = Immutable.Record({
+        let <%= model %> = Immutable.Record({
             id: null,
             type: null
         });
@@ -53,7 +53,7 @@
         //////////////////////////////////////////////
         // the exported final service
         //////////////////////////////////////////////
-        var service = {
+        const service = {
             <%= model %>: <%= model %>
         };
 

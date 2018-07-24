@@ -1,15 +1,15 @@
 {
   "generator-ng-component-es5": {
     "promptValues": {
-      "componentName": "asd"
+      "componentName": "sampleComponent"
     }
   },
   "generator-s9s-ngcomponent": {
     "promptValues": {
-      "lang": "es5",
+      "lang": "es6",
       "ngApp": "ngApp",
       "parent": "testm",
-      "preffix": "/clustercontasdasda/asd"
+      "preffix": "/clustercontasdasda/sampleComponent"
     }
   }
 }
