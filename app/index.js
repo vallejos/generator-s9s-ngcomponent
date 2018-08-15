@@ -251,7 +251,7 @@ module.exports = class extends Generator {
         // copy specs for service
         this.fs.copyTpl(
             this.templatePath(`service.${lang}.spec.js`),
-            this.destinationPath(nam`${name}.service.spec.js`),
+            this.destinationPath(`${name}.service.spec.js`),
             { componentName: name, moduleName: module, serviceName: service }
         );
     }
