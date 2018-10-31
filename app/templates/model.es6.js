@@ -1,6 +1,7 @@
 /**
  * <%= componentName %> Model
- * @desc <%= componentName %> model definition and implementation
+ * <%= componentName %> model definition and implementation
+ * 
  * @namespace Models
  */
 (() => {
@@ -13,10 +14,11 @@
     <%= modelName %>.$inject = ['Immutable'];
 
     /**
+     * Defines <%= model %> model
+     * 
      * @namespace <%= modelName %>
-     * @desc Defines <%= model %> model.
-     * @param {Immutable} Immutable
      * @memberOf Models
+     * @param {Immutable} Immutable
      */
     function <%= modelName %>(Immutable) {
         //////////////////////////////////////////////
@@ -25,6 +27,7 @@
 
         /**
          * <%= model %> Model
+         * 
          * @type {Immutable.Record}
          */
         let <%= model %> = Immutable.Record({
@@ -44,6 +47,7 @@
 
         /**
          * Returns whether the model is an example or not
+         * 
          * @return {boolean}
          */
         function isExample() {
@@ -53,11 +57,10 @@
         //////////////////////////////////////////////
         // the exported final service
         //////////////////////////////////////////////
-        const service = {
+        return {
             <%= model %>: <%= model %>
         };
 
-        return service;
     }
 
 })();

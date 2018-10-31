@@ -1,6 +1,7 @@
 /**
  * <%= componentName %> Module
- * @desc <%= componentName %> module definition
+ * <%= componentName %> module definition
+ * 
  * @namespace Modules
  */
 (() => {

@@ -6,14 +6,14 @@ describe('<%= componentName %> component', () => {
     'use strict';
 
     // variables
-    let $scope, $rootScope, $compile;
-    let component;
+    let $compile, $rootScope, $scope, component;
 
     // mocks
-    const someMock = {};
+    const CCClusterServiceMock1 = {};
+    const CCClusterServiceMock2 = {};
 
     // helper functions
-    const getCompiledComponent = (myAttr) => {
+    const getCompiledComponent = myAttr => {
         $scope.myAttr = myAttr;
 
         const element = angular.element('<<%= htmlElementName %> my-attr="myAttr"></<%= htmlElementName %>>');
@@ -21,21 +21,20 @@ describe('<%= componentName %> component', () => {
 
         $scope.$digest();
         return component;
-    }
+    };
 
     // load required modules
     beforeEach(module('<%= tplModuleName %>')); // templates
     beforeEach(module('<%= moduleName %>')); // our module
 
     // provide mocks and global constants
-    beforeEach(module(($provide) => {
-        $provide.value('CCClusterService', CCClusterServiceMock);
-        $provide.constant('CCClusterService', CCClusterServiceMock);
-
+    beforeEach(module($provide => {
+        $provide.value('CCClusterService1', CCClusterServiceMock1);
+        $provide.constant('CCClusterService2', CCClusterServiceMock2);
     }));
 
     // inject the providers for the component controller dependencies
-    beforeEach(inject(($injector) => {
+    beforeEach(inject($injector => {
         $rootScope = $injector.get('$rootScope');
         $compile = $injector.get('$compile');
 
@@ -44,7 +43,7 @@ describe('<%= componentName %> component', () => {
 
     // get the compiled component
     beforeEach(() => {
-        let myAttr = 'some-value';
+        const myAttr = 'some-value';
         component = getCompiledComponent(myAttr);
     });
 

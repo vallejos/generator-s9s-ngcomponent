@@ -1,6 +1,7 @@
 /**
  * <%= componentName %> Controller
- * @desc <%= componentName %> controller implementation
+ * <%= componentName %> controller implementation
+ * 
  * @namespace Controllers
  */
 (() => {
@@ -16,6 +17,7 @@
 
     /**
      * <%= componentName %> Controller
+     * 
      * @constructor
      */
     function <%= controllerName %>() {
@@ -32,7 +34,7 @@
         /////////////////
 
         /**
-         * Inits Controller.
+         * Handle Controller Initialization
          */
         function onInit() {
             // do something
@@ -40,7 +42,7 @@
         }
 
         /**
-         * Handle Updates.
+         * Handle Updates
          */
         function onChanges() {
             // do something

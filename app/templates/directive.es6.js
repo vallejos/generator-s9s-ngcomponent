@@ -1,6 +1,7 @@
 /**
  * <%= componentName %> Directive
- * @desc <%= componentName %> directive implementation
+ * <%= componentName %> directive implementation
+ * 
  * @namespace Directives
  */
 (() => {

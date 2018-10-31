@@ -1,5 +1,6 @@
 /**
  * <%= serviceName %> Service Test
+ * 
  * @namespace Tests
  */
 describe('<%= serviceName %> Service', () => {
@@ -45,6 +46,6 @@ describe('<%= serviceName %> Service', () => {
             expect(<%= serviceName %>.isExample).not.toBeUndefined();
             expect(typeof <%= serviceName %>.isExample).toEqual('function');
         });
-    })
+    });
 
 });

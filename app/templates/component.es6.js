@@ -1,6 +1,7 @@
 /**
  * <%= componentName %> Component
- * @desc <%= componentName %> component definition
+ * <%= componentName %> component definition
+ * 
  * @namespace Components
  */
 (() => {

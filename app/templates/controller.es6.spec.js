@@ -6,9 +6,9 @@ describe('<%= controllerName %>', () => {
     'use strict';
 
     // variables
-    let $ctrl;
-    let $scope, $rootScope, $componentController;
-    let ExampleService1, ExampleService2;
+
+    let $componentController, $ctrl, $rootScope, $scope, ExampleService1, ExampleService2;
+
 
     // mocks
     const ExampleService1Mock = {};
@@ -16,25 +16,25 @@ describe('<%= controllerName %>', () => {
     const mockedAttr = 'something';
 
     // helper functions
-    const getController = (myBindings) => {
-        $componentController('<%= componentName %>', { $scope }, myBindings)
+    const getController = myBindings => {
+        $componentController('<%= componentName %>', { $scope }, myBindings);
     };
 
     // load required modules
     beforeEach(module('<%= moduleName %>')); // our module
 
     // provide mocks and global constants
-    beforeEach(module(($provide) => {
+    beforeEach(module($provide => {
         $provide.value('ExampleService1', ExampleService1Mock);
         $provide.value('ExampleService2', ExampleService2Mock);
     }));
 
     // inject the providers for the controller dependencies
-    beforeEach(inject(($injector) => {
+    beforeEach(inject($injector => {
         $rootScope = $injector.get('$rootScope');
 
-        ExampleService1 =  $injector.get('ExampleService1');
-        ExampleService2 =  $injector.get('ExampleService2');
+        ExampleService1 = $injector.get('ExampleService1');
+        ExampleService2 = $injector.get('ExampleService2');
         $componentController = $injector.get('$componentController');
 
         $scope = $rootScope.$new();
@@ -42,7 +42,7 @@ describe('<%= controllerName %>', () => {
 
     // get the controller
     beforeEach(() => {
-        let bindings = {
+        const bindings = {
             myAttr: mockedAttr
         };
 

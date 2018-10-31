@@ -1,6 +1,7 @@
 /**
  * <%= componentName %> Service
- * @desc <%= componentName %> service implementation
+ * <%= componentName %> service implementation
+ * 
  * @namespace Services
  */
 (() => {
@@ -14,26 +15,25 @@
     <%= serviceName %>.$inject = [];
 
     /**
+     * <%= serviceName %> Service
+     * 
      * @namespace <%= serviceName %>
-     * @desc <%= serviceName %> Service
      * @memberOf Services
      */
     function <%= serviceName %>() {
 
         // define the exported service methods
-        const service = {
+        return {
             isExample: isExample
         };
-
-        return service;
 
         //////////////////////////////////////////////
         // implement the methods below
         //////////////////////////////////////////////
 
         /**
-         * @name isExample
-         * @desc just an example method
+         * Just an example method
+         * 
          * @returns {boolean}
          */
         function isExample() {
