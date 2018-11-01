@@ -2,6 +2,7 @@
 const decamelize = require('decamelize');
 const {existsSync} = require('fs');
 const Generator = require('yeoman-generator');
+const {resolve} = require('path');
 const upperCamelCase = require('uppercamelcase');
 
 const defaultAppName = 'myApp';
@@ -43,8 +44,7 @@ module.exports = class extends Generator {
                 type    : 'input',
                 name    : 'ngApp',
                 message : 'AngularJS app name:',
-                default : defaultAppName,
-                store   : true
+                default : defaultAppName
             },
             {
                 type    : 'input',
@@ -54,8 +54,7 @@ module.exports = class extends Generator {
             {
                 type    : 'input',
                 name    : 'prefix',
-                message : 'Component templateUrl (i.e.: /myApp/client):',
-                store   : true
+                message : 'Component templateUrl (i.e.: /myApp/client):'
             }
         ]);
 
@@ -65,8 +64,12 @@ module.exports = class extends Generator {
         answers.parent = answers.parent.trim();
         answers.prefix = answers.prefix.trim() || defaultTplPrefix;
 
+        // @todo https://github.com/yeoman/yo/issues/603
+        const cwd = process.env.INIT_CWD || this.contextRoot;
+        const outputDir = resolve(cwd, answers.name);
+
         // create destination folder
-        this.destinationRoot(answers.name);
+        this.destinationRoot(outputDir);
 
         const controllerName = upperCamelCase(`${answers.name}Controller`);
         const serviceName = upperCamelCase(`${answers.name}Service`);
