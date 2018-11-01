@@ -15,7 +15,7 @@
                 myAttr: '<'
             },
             controller: '<%= controllerName %> as vm',
-            templateUrl: '<%= templateUrlPreffix %>/<%= componentName %>/<%= componentName %>.html'
+            templateUrl: '<%= templateUrlPrefix %>/<%= componentName %>/<%= componentName %>.html'
         });
 
 })();

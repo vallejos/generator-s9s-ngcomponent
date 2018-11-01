@@ -1,14 +1,12 @@
 'use strict';
-
-const fs = require('fs');
+const decamelize = require('decamelize');
+const {existsSync} = require('fs');
 const Generator = require('yeoman-generator');
 const upperCamelCase = require('uppercamelcase');
-const decamelize = require('decamelize');
 
 const defaultAppName = 'myApp';
-const defaultTplPreffix = '/myApp/client';
-const defaultParent = '';
 const defaultLang = 'es6';
+const defaultTplPrefix = '/myApp/client';
 
 module.exports = class extends Generator {
     constructor(args, opts) {
@@ -16,265 +14,269 @@ module.exports = class extends Generator {
 
         // This makes `componentName` a required argument.
         this.argument('name', { type: String, required: false });
-        this.argument('type', { type: String, required: false });
         this.argument('lang', { type: String, required: false });
         this.argument('ngApp', { type: String, required: false });
+        this.argument('type', { type: String, required: false });
     }
 
-    paths() {
-        this.destinationRoot();
-    }
+    async start() {
+        const TYPE_COMPONENT = 'component';
+        const TYPE_CONTROLLER = 'controller';
+        const TYPE_DIRECTIVE = 'directive';
+        const TYPE_MODEL = 'model';
+        const TYPE_MODULE = 'module';
+        const TYPE_SERVICE = 'service';
 
-    start() {
-        this.prompt([
+        const answers = await this.prompt([
             {
                 type    : 'input',
                 name    : 'name',
-                message : 'Enter a name for the new component (i.e.: myNewComponent): '
+                message : 'Component name:',
+                default : 'myComponent'
             },
             {
                 type    : 'list',
-                choices : ['component', 'controller', 'service', 'module', 'directive', 'model'],
+                choices : [TYPE_COMPONENT, TYPE_CONTROLLER, TYPE_DIRECTIVE, TYPE_MODEL, TYPE_MODULE, TYPE_SERVICE],
                 name    : 'type',
-                message : 'Select type of Angular component: '
+                message : 'Component type:'
             },
             {
                 type    : 'list',
                 choices : ['es6', 'es5'],
                 name    : 'lang',
-                message : 'Choose the JS version: ',
+                message : 'JavaScript version:',
                 store   : true
             },
             {
                 type    : 'input',
                 name    : 'ngApp',
-                message : 'Enter the name for the Angular app (i.e.: myApp): ',
+                message : 'AngularJS app name:',
+                default : defaultAppName,
                 store   : true
             },
             {
                 type    : 'input',
                 name    : 'parent',
-                message : 'Enter the name for the parent module: '
+                message : 'Parent module name:'
             },
             {
                 type    : 'input',
-                name    : 'preffix',
-                message : 'Customize the templateUrl for the components (i.e.: /myApp/client): ',
+                name    : 'prefix',
+                message : 'Component templateUrl (i.e.: /myApp/client):',
                 store   : true
-            },
-        ]).then( (answers) => {
-            // remove unwanted blank spaces
-            answers.name = answers.name.trim();
-            answers.ngApp = answers.ngApp.trim() || defaultAppName;
-            answers.preffix = answers.preffix.trim() || defaultTplPreffix;
-            answers.parent = answers.parent.trim() || defaultParent;
-            answers.lang = answers.lang.toLowerCase().trim();
-
-            // create destination folder
-            this.destinationRoot(answers.name);
-
-            // check lang spec support
-            if (answers.lang !== 'es5' && answers.lang !== 'es6') {
-                // es5 and es6 supported
-                this.log(`ERROR: Unsupported JS Specification: ${answers.lang}`);
             }
+        ]);
 
-            let controllerName = upperCamelCase(`${answers.name}Controller`);
-            let serviceName = upperCamelCase(`${answers.name}Service`);
-            let modelName = upperCamelCase(`${answers.name}Model`);
-            let model = upperCamelCase(answers.name);
-            let moduleName = (answers.parent !== '') ? 
-                                `${answers.ngApp}.${answers.parent}.${answers.name}` : 
-                                `${answers.ngApp}.${answers.name}`;
-            let tplPreffix = answers.preffix;
-            let tplModuleName = `${answers.ngApp}.templates`;
-            let htmlElementName = decamelize(answers.name, '-');
-            let className = decamelize(answers.name, '-');
+        // remove unwanted blank spaces
+        answers.lang = answers.lang.toLowerCase().trim();
+        answers.name = answers.name.trim();
+        answers.ngApp = answers.ngApp.trim() || defaultAppName;
+        answers.parent = answers.parent.trim();
+        answers.prefix = answers.prefix.trim() || defaultTplPrefix;
 
-            switch (answers.type) {
-                case 'component':
-                    this._writeModule(answers.name, answers.lang, moduleName);
-                    this._writeComponent(answers.name, answers.lang, controllerName, moduleName, tplPreffix, tplModuleName, htmlElementName, className);
-                    this._writeController(answers.name, answers.lang, controllerName, moduleName);
-                    this._writeStyles(answers.name, className);
-                    this._writeHtml(answers.name, className);
-                    this._writeMD(answers.name);
-                    break;
-                case 'module':
-                    this._writeModule(answers.name, answers.lang, moduleName);
-                    this._writeMD(answers.name);
-                    break;
-                case 'controller':
-                    this._writeModule(answers.name, answers.lang, moduleName);
-                    this._writeController(answers.name, answers.lang, controllerName, moduleName);
-                    this._writeMD(answers.name);
-                    break;
-                case 'directive':
-                    this._writeModule(answers.name, answers.lang, moduleName);
-                    this._writeDirective(answers.name, answers.lang, controllerName, moduleName, tplPreffix, tplModuleName, htmlElementName, className);
-                    this._writeController(answers.name, answers.lang, controllerName, moduleName);
-                    this._writeStyles(answers.name, className);
-                    this._writeHtml(answers.name, className);
-                    this._writeMD(answers.name);
-                    break;
-                case 'service':
-                    this._writeModule(answers.name, answers.lang, moduleName);
-                    this._writeService(answers.name, answers.lang, serviceName, moduleName);
-                    this._writeMD(answers.name);
-                    break;
-                case 'model':
-                    this._writeModule(answers.name, answers.lang, moduleName);
-                    this._writeModel(answers.name, answers.lang, modelName, moduleName, model);
-                    this._writeMD(answers.name);
-                    break;
-                default:
-                    this.log('ERROR: Unsupported Angular component: ' + answers.type);
-            }
-            
-        });
+        // create destination folder
+        this.destinationRoot(answers.name);
+
+        // check lang spec support
+        if (answers.lang !== 'es5' && answers.lang !== 'es6') {
+            // es5 and es6 supported
+            this.log(`ERROR: Unsupported JS Specification: ${answers.lang}`);
+        }
+
+        const controllerName = upperCamelCase(`${answers.name}Controller`);
+        const serviceName = upperCamelCase(`${answers.name}Service`);
+        const modelName = upperCamelCase(`${answers.name}Model`);
+        const model = upperCamelCase(answers.name);
+        const moduleName = (answers.parent !== '') ?
+                            `${answers.ngApp}.${answers.parent}.${answers.name}` :
+                            `${answers.ngApp}.${answers.name}`;
+        const templateUrlPrefix = answers.prefix;
+        const templateModuleName = `${answers.ngApp}.templates`;
+        const htmlElementName = decamelize(answers.name, '-');
+        const className = decamelize(answers.name, '-');
+
+        switch (answers.type) {
+            case TYPE_COMPONENT:
+                this._writeModule(answers.name, answers.lang, moduleName);
+                this._writeComponent(answers.name, answers.lang, controllerName, moduleName, templateUrlPrefix, templateModuleName, htmlElementName, className);
+                this._writeController(answers.name, answers.lang, controllerName, moduleName);
+                this._writeStyles(answers.name, className);
+                this._writeHtml(answers.name, className);
+                this._writeMD(answers.name);
+                break;
+            case TYPE_MODULE:
+                this._writeModule(answers.name, answers.lang, moduleName);
+                this._writeMD(answers.name);
+                break;
+            case TYPE_CONTROLLER:
+                this._writeModule(answers.name, answers.lang, moduleName);
+                this._writeController(answers.name, answers.lang, controllerName, moduleName);
+                this._writeMD(answers.name);
+                break;
+            case TYPE_DIRECTIVE:
+                this._writeModule(answers.name, answers.lang, moduleName);
+                this._writeDirective(answers.name, answers.lang, controllerName, moduleName, templateUrlPrefix, templateModuleName, htmlElementName, className);
+                this._writeController(answers.name, answers.lang, controllerName, moduleName);
+                this._writeStyles(answers.name, className);
+                this._writeHtml(answers.name, className);
+                this._writeMD(answers.name);
+                break;
+            case TYPE_SERVICE:
+                this._writeModule(answers.name, answers.lang, moduleName);
+                this._writeService(answers.name, answers.lang, serviceName, moduleName);
+                this._writeMD(answers.name);
+                break;
+            case TYPE_MODEL:
+                this._writeModule(answers.name, answers.lang, moduleName);
+                this._writeModel(answers.name, answers.lang, modelName, moduleName, model);
+                this._writeMD(answers.name);
+                break;
+            default:
+                this.log(`ERROR: Unsupported Angular component: ${answers.type}`);
+        }
     }
 
-    _writeStyles(name, className) {
+    _writeStyles(componentName, className) {
         this.fs.copyTpl(
             this.templatePath('template.scss'),
-            this.destinationPath(`${name}.scss`),
-            { className: className, componentName: name }
+            this.destinationPath(`${componentName}.scss`),
+            { className, componentName }
         );
     }
 
-    _writeHtml(name, className) {
+    _writeHtml(componentName, className) {
         this.fs.copyTpl(
             this.templatePath('template.html'),
-            this.destinationPath(`${name}.html`),
-            { className: className }
+            this.destinationPath(`${componentName}.html`),
+            { className }
         );
     }
 
-    _writeMD(name) {
+    _writeMD(componentName) {
         this.fs.copyTpl(
             this.templatePath('README.md'),
             this.destinationPath('README.md'),
-            { componentName: name }
+            { componentName }
         );
     }
 
-    _writeModule(name, lang, module) {
+    _writeModule(componentName, lang, moduleName) {
         this.fs.copyTpl(
             this.templatePath(`module.${lang}.js`),
-            this.destinationPath(`${name}.module.js`),
-            { componentName: name, moduleName: module }
+            this.destinationPath(`${componentName}.module.js`),
+            { componentName, moduleName }
         );
     }
 
-    _writeComponent(name, lang, controller, module, tplPreffix, tplModule, htmlElement, className) {
+    _writeComponent(componentName, lang, controllerName, moduleName, templateUrlPrefix, templateModuleName, htmlElementName, className) {
         // copy component
         this.fs.copyTpl(
             this.templatePath(`component.${lang}.js`),
-            this.destinationPath(`${name}.component.js`),
+            this.destinationPath(`${componentName}.component.js`),
             {
-                componentName: name, 
-                moduleName: module, 
-                controllerName: controller, 
-                templateUrlPreffix: tplPreffix 
+                componentName,
+                controllerName,
+                moduleName,
+                templateUrlPrefix
             }
         );
 
         // copy specs for component
         this.fs.copyTpl(
             this.templatePath(`component.${lang}.spec.js`),
-            this.destinationPath(`${name}.component.spec.js`),
+            this.destinationPath(`${componentName}.component.spec.js`),
             {
-                componentName: name,
-                moduleName: module,
-                controllerName: controller,
-                templateUrlPreffix: tplPreffix,
-                tplModuleName: tplModule,
-                htmlElementName: htmlElement,
-                className: className,
+                className,
+                componentName,
+                controllerName,
+                htmlElementName,
+                moduleName,
+                templateModuleName,
+                templateUrlPrefix
             }
         );
     }
 
-    _writeDirective(name, lang, controller, module, tplPreffix, tplModule, htmlElement, className) {
+    _writeDirective(componentName, lang, controllerName, moduleName, templateUrlPrefix, templateModuleName, htmlElementName, className) {
         // copy directive
         this.fs.copyTpl(
             this.templatePath(`directive.${lang}.js`),
-            this.destinationPath(`${name}.directive.js`),
+            this.destinationPath(`${componentName}.directive.js`),
             {
-                componentName: name, 
-                moduleName: module, 
-                controllerName: controller, 
-                templateUrlPreffix: tplPreffix 
+                componentName,
+                controllerName,
+                moduleName,
+                templateUrlPrefix
             }
         );
 
         // copy specs for directive
         this.fs.copyTpl(
             this.templatePath(`directive.${lang}.spec.js`),
-            this.destinationPath(`${name}.directive.spec.js`),
+            this.destinationPath(`${componentName}.directive.spec.js`),
             {
-                componentName: name,
-                moduleName: module,
-                controllerName: controller,
-                templateUrlPreffix: tplPreffix,
-                tplModuleName: tplModule,
-                htmlElementName: htmlElement,
-                className: className,
+                className,
+                componentName,
+                controllerName,
+                htmlElementName,
+                moduleName,
+                templateModuleName,
+                templateUrlPrefix
             }
         );
     }
 
-    _writeController(name, lang, controller, module) {
+    _writeController(componentName, lang, controllerName, moduleName) {
         // copy controller
         this.fs.copyTpl(
             this.templatePath(`controller.${lang}.js`),
-            this.destinationPath(`${name}.controller.js`),
-            { componentName: name, moduleName: module, controllerName: controller }
+            this.destinationPath(`${componentName}.controller.js`),
+            { componentName, controllerName, moduleName }
         );
 
         // copy specs for controller
         this.fs.copyTpl(
             this.templatePath(`controller.${lang}.spec.js`),
-            this.destinationPath(`${name}.controller.spec.js`),
-            { componentName: name, moduleName: module, controllerName: controller }
+            this.destinationPath(`${componentName}.controller.spec.js`),
+            { componentName, controllerName, moduleName }
         );
     }
 
-    _writeService(name, lang, service, module) {
+    _writeService(componentName, lang, serviceName, moduleName) {
         // copy service
         this.fs.copyTpl(
             this.templatePath(`service.${lang}.js`),
-            this.destinationPath(`${name}.service.js`),
-            { componentName: name, moduleName: module, serviceName: service }
+            this.destinationPath(`${componentName}.service.js`),
+            { componentName, moduleName, serviceName }
         );
 
         // copy specs for service
         this.fs.copyTpl(
             this.templatePath(`service.${lang}.spec.js`),
-            this.destinationPath(`${name}.service.spec.js`),
-            { componentName: name, moduleName: module, serviceName: service }
+            this.destinationPath(`${componentName}.service.spec.js`),
+            { componentName, moduleName, serviceName }
         );
     }
 
-    _writeModel(name, lang, modelName, module, model) {
+    _writeModel(componentName, lang, modelName, moduleName, model) {
         // copy model
         this.fs.copyTpl(
             this.templatePath(`model.${lang}.js`),
-            this.destinationPath(`${name}.model.js`),
-            { componentName: name, moduleName: module, modelName: modelName, model: model }
+            this.destinationPath(`${componentName}.model.js`),
+            { componentName, model, modelName, moduleName }
         );
 
         // copy specs for model
         this.fs.copyTpl(
             this.templatePath(`model.${lang}.spec.js`),
-            this.destinationPath(`${name}.model.spec.js`),
-            { componentName: name, moduleName: module, modelName: modelName, model: model }
+            this.destinationPath(`${componentName}.model.spec.js`),
+            { componentName, model, modelName, moduleName }
         );
     }
 
     _verify() {
         this.log('Verifying...');
-        if (fs.existsSync(componentName)) {
+        if (existsSync(componentName)) {
             this.error('ERROR: The destination folder for the component already exists.');
         }
     }

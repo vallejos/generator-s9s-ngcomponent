@@ -23,7 +23,7 @@ describe('<%= componentName %> directive', () => {
     }
 
     // load required modules
-    beforeEach(module('<%= tplModuleName %>')); // templates
+    beforeEach(module('<%= templateModuleName %>')); // templates
     beforeEach(module('<%= moduleName %>')); // our module
 
     // provide mocks and global constants

@@ -8,7 +8,6 @@
 
     angular.module('<%= moduleName %>', [
         // insert dependencies here
-
     ]);
 
 })();

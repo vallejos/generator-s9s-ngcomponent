@@ -1,36 +1,29 @@
 {
   "name": "generator-s9s-ngcomponent",
-  "version": "0.0.7",
   "description": "S9S yeoman generator for Angular components",
-  "main": "index.js",
+  "version": "0.0.7",
+  "license": "MIT",
+  "author": "Fabian Vallejos <vallejosfab@gmail.com>",
+  "repository": "github:vallejos/generator-s9s-ngcomponent",
+  "dependencies": {
+    "decamelize": "^2.0.0",
+    "uppercamelcase": "^3.0.0",
+    "yeoman-generator": "^3.1.1"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/vallejos/generator-s9s-ngcomponent.git"
-  },
+  "files": [
+    "app"
+  ],
   "keywords": [
     "yeoman-generator",
     "angular",
+    "angularjs",
     "component",
     "javascript",
     "builder",
     "scaffold",
     "generator"
-  ],
-  "author": "Fabian Vallejos <vallejosfab@gmail.com>",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/vallejos/generator-s9s-ngcomponent/issues"
-  },
-  "homepage": "https://github.com/vallejos/generator-s9s-ngcomponent#readme",
-  "dependencies": {
-    "decamelize": "^1.2.0",
-    "uppercamelcase": "^3.0.0",
-    "yeoman-generator": "^1.1.1"
-  },
-  "files": [
-    "app"
   ]
 }

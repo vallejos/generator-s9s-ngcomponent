@@ -18,7 +18,7 @@
                 // insert your directive's attributes here
                 myAttr: '&'
             },
-            templateUrl: '<%= templateUrlPreffix %>/<%= componentName %>/<%= componentName %>.html',
+            templateUrl: '<%= templateUrlPrefix %>/<%= componentName %>/<%= componentName %>.html',
             controller: '<%= controllerName %> as vm',
             controllerAs: 'vm',
             bindToController: true
