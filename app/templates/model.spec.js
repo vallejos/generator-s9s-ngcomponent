@@ -1,37 +1,41 @@
+import <%= titleName %>Module from './<%= camelName %>.module.js';
+
 /**
- * <%= modelName %> Model Test
+ * <%= titleName %> model tests
  * @namespace Tests
  */
-describe('<%= modelName %> Model', () => {
-    'use strict';
-
+describe('<%= titleName %> model', () => {
     // variables
-    let <%= model %>;
+    let <%= titleName %>, ExampleService1, ExampleService2;
 
     // mocks
-    const someMock = {};
+    const ExampleService1Mock = {};
+    const ExampleService2Mock = {};
 
     // helper functions
-    function someHelp() {
+    function someHelper() {
         return;
     }
 
     // load required modules
-    beforeEach(module('<%= moduleName %>')); // our module
+    beforeEach(angular.mock.module(<%= titleName %>Module));
 
     // provide mocks and global constants
-    beforeEach(module('<%= moduleName %>', ($provide) => {
-        $provide.constant('Immutable', Immutable); // required by ES5 model
+    beforeEach(angular.mock.module($provide => {
+        $provide.value('ExampleService1', ExampleService1Mock);
+        $provide.value('ExampleService2', ExampleService2Mock);
     }));
 
     // inject the providers for the model service dependencies and get the model service
-    beforeEach(inject(($injector) => {
-        <%= model %> = $injector.get('<%= modelName %>').<%= model %>;
+    beforeEach(angular.mock.inject($injector => {
+        <%= titleName %> = $injector.get('<%= titleName %>').<%= titleName %>;
+        ExampleService1 = $injector.get('ExampleService1');
+        ExampleService2 = $injector.get('ExampleService2');
     }));
 
     // test the model
-    it('should exist', () => {
-        expect(<%= model %>).toBeDefined();
+    it('exists', () => {
+        expect(<%= titleName %>).toBeDefined();
     });
 
     // test each model method

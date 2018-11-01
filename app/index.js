@@ -1,13 +1,10 @@
 'use strict';
+const camelCase = require('camelcase');
 const decamelize = require('decamelize');
 const {existsSync} = require('fs');
 const Generator = require('yeoman-generator');
 const {resolve} = require('path');
 const upperCamelCase = require('uppercamelcase');
-
-const defaultAppName = 'myApp';
-const defaultLang = 'es6';
-const defaultTplPrefix = '/myApp/client';
 
 module.exports = class extends Generator {
     constructor(args, opts) {
@@ -20,251 +17,251 @@ module.exports = class extends Generator {
     }
 
     async start() {
-        const TYPE_COMPONENT = 'component';
-        const TYPE_CONTROLLER = 'controller';
-        const TYPE_DIRECTIVE = 'directive';
-        const TYPE_MODEL = 'model';
-        const TYPE_MODULE = 'module';
-        const TYPE_SERVICE = 'service';
+        const TYPE_COMPONENT = 'Component';
+        const TYPE_CONTROLLER = 'Controller';
+        const TYPE_DIRECTIVE = 'Directive';
+        const TYPE_MODEL = 'Model';
+        const TYPE_MODULE = 'Module';
+        const TYPE_SERVICE = 'Service';
+
+        const types = {
+            TYPE_COMPONENT,
+            TYPE_CONTROLLER,
+            TYPE_DIRECTIVE,
+            TYPE_MODEL,
+            TYPE_MODULE,
+            TYPE_SERVICE
+        };
+
+        const defaultAppName = 'ngApp';
+        const defaultPrefix = 'my';
 
         const answers = await this.prompt([
             {
-                type    : 'input',
-                name    : 'name',
-                message : 'Component name:',
-                default : 'myComponent'
+                type    : 'list',
+                choices : Object.values(types),
+                name    : 'type',
+                message : 'Type:'
             },
             {
-                type    : 'list',
-                choices : [TYPE_COMPONENT, TYPE_CONTROLLER, TYPE_DIRECTIVE, TYPE_MODEL, TYPE_MODULE, TYPE_SERVICE],
-                name    : 'type',
-                message : 'Component type:'
+                type    : 'input',
+                name    : 'name',
+                message : 'Name:',
+                default : 'ExampleSomething',
+                filter  : value => upperCamelCase(value.trim())
+            },
+            {
+                type    : 'input',
+                name    : 'prefix',
+                message : ({type}) => `${type} prefix:`,
+                default : defaultPrefix,
+                filter  : value => value.trim().toLowerCase() || defaultPrefix,
+                when    : ({type}) => type === TYPE_COMPONENT || type === TYPE_DIRECTIVE
+            },
+            {
+                type    : 'confirm',
+                name    : 'dependencies',
+                message : 'Use dependencies recommended by S9S:'
             },
             {
                 type    : 'input',
                 name    : 'ngApp',
                 message : 'AngularJS app name:',
-                default : defaultAppName
+                default : defaultAppName,
+                filter  : value => value.trim() || defaultAppName
             },
             {
                 type    : 'input',
                 name    : 'parent',
-                message : 'Parent module name:'
-            },
-            {
-                type    : 'input',
-                name    : 'prefix',
-                message : 'Component templateUrl (i.e.: /myApp/client):'
+                message : 'Parent module name:',
+                filter  : value => value.trim()
             }
         ]);
 
-        // remove unwanted blank spaces
-        answers.name = answers.name.trim();
-        answers.ngApp = answers.ngApp.trim() || defaultAppName;
-        answers.parent = answers.parent.trim();
-        answers.prefix = answers.prefix.trim() || defaultTplPrefix;
+        const {dependencies, name, ngApp, parent, prefix, type} = answers;
+
+        if (!name) {
+            this.log('ERROR: name must not be empty');
+            return;
+        }
+
+        const camelName = camelCase(name);
+        const kebabName = decamelize(`${prefix}${name}`, '-');
+
+        const config = {
+            ...types,
+            camelName,
+            kebabName,
+            moduleName: parent ? `${ngApp}.${parent}.${camelName}` : `${ngApp}.${camelName}`,
+            prefix,
+            titleName: name,
+            type,
+            useS9SDependencies: dependencies
+        };
 
         // @todo https://github.com/yeoman/yo/issues/603
         const cwd = process.env.INIT_CWD || this.contextRoot;
-        const outputDir = resolve(cwd, answers.name);
+        const outputDir = resolve(cwd, camelName);
 
         // create destination folder
         this.destinationRoot(outputDir);
 
-        const controllerName = upperCamelCase(`${answers.name}Controller`);
-        const serviceName = upperCamelCase(`${answers.name}Service`);
-        const modelName = upperCamelCase(`${answers.name}Model`);
-        const model = upperCamelCase(answers.name);
-        const moduleName = (answers.parent !== '') ?
-                            `${answers.ngApp}.${answers.parent}.${answers.name}` :
-                            `${answers.ngApp}.${answers.name}`;
-        const templateUrlPrefix = answers.prefix;
-        const templateModuleName = `${answers.ngApp}.templates`;
-        const htmlElementName = decamelize(answers.name, '-');
-        const className = decamelize(answers.name, '-');
-
-        switch (answers.type) {
+        switch (type) {
             case TYPE_COMPONENT:
-                this._writeModule(answers.name, moduleName);
-                this._writeComponent(answers.name, controllerName, moduleName, templateUrlPrefix, templateModuleName, htmlElementName, className);
-                this._writeController(answers.name, controllerName, moduleName);
-                this._writeStyles(answers.name, className);
-                this._writeHtml(answers.name, className);
-                this._writeMD(answers.name);
-                break;
-            case TYPE_MODULE:
-                this._writeModule(answers.name, moduleName);
-                this._writeMD(answers.name);
+                this._writeModule(config);
+                this._writeComponent(config);
+                this._writeController(config);
+                this._writeStyles(config);
+                this._writeHtml(config);
+                this._writeMD(config);
                 break;
             case TYPE_CONTROLLER:
-                this._writeModule(answers.name, moduleName);
-                this._writeController(answers.name, controllerName, moduleName);
-                this._writeMD(answers.name);
+                this._writeModule(config);
+                this._writeController(config);
+                this._writeMD(config);
                 break;
             case TYPE_DIRECTIVE:
-                this._writeModule(answers.name, moduleName);
-                this._writeDirective(answers.name, controllerName, moduleName, templateUrlPrefix, templateModuleName, htmlElementName, className);
-                this._writeController(answers.name, controllerName, moduleName);
-                this._writeStyles(answers.name, className);
-                this._writeHtml(answers.name, className);
-                this._writeMD(answers.name);
-                break;
-            case TYPE_SERVICE:
-                this._writeModule(answers.name, moduleName);
-                this._writeService(answers.name, serviceName, moduleName);
-                this._writeMD(answers.name);
+                this._writeModule(config);
+                this._writeDirective(config);
+                this._writeController(config);
+                this._writeStyles(config);
+                this._writeHtml(config);
+                this._writeMD(config);
                 break;
             case TYPE_MODEL:
-                this._writeModule(answers.name, moduleName);
-                this._writeModel(answers.name, modelName, moduleName, model);
-                this._writeMD(answers.name);
+                this._writeModule(config);
+                this._writeModel(config);
+                this._writeMD(config);
+                break;
+            case TYPE_MODULE:
+                this._writeModule(config);
+                this._writeMD(config);
+                break;
+            case TYPE_SERVICE:
+                this._writeModule(config);
+                this._writeService(config);
+                this._writeMD(config);
                 break;
             default:
-                this.log(`ERROR: Unsupported Angular component: ${answers.type}`);
+                this.log(`ERROR: Unsupported type: ${type}`);
         }
     }
 
-    _writeStyles(componentName, className) {
+    _writeStyles(config) {
         this.fs.copyTpl(
             this.templatePath('template.scss'),
-            this.destinationPath(`${componentName}.scss`),
-            { className, componentName }
+            this.destinationPath(`${config.camelName}.scss`),
+            config
         );
     }
 
-    _writeHtml(componentName, className) {
+    _writeHtml(config) {
         this.fs.copyTpl(
             this.templatePath('template.html'),
-            this.destinationPath(`${componentName}.html`),
-            { className }
+            this.destinationPath(`${config.camelName}.html`),
+            config
         );
     }
 
-    _writeMD(componentName) {
+    _writeMD(config) {
         this.fs.copyTpl(
             this.templatePath('README.md'),
             this.destinationPath('README.md'),
-            { componentName }
+            config
         );
     }
 
-    _writeModule(componentName, moduleName) {
+    _writeModule(config) {
         this.fs.copyTpl(
             this.templatePath(`module.js`),
-            this.destinationPath(`${componentName}.module.js`),
-            { componentName, moduleName }
+            this.destinationPath(`${config.camelName}.module.js`),
+            config
         );
     }
 
-    _writeComponent(componentName, controllerName, moduleName, templateUrlPrefix, templateModuleName, htmlElementName, className) {
+    _writeComponent(config) {
         // copy component
         this.fs.copyTpl(
             this.templatePath(`component.js`),
-            this.destinationPath(`${componentName}.component.js`),
-            {
-                componentName,
-                controllerName,
-                moduleName,
-                templateUrlPrefix
-            }
+            this.destinationPath(`${config.camelName}.component.js`),
+            config
         );
 
         // copy specs for component
         this.fs.copyTpl(
             this.templatePath(`component.spec.js`),
-            this.destinationPath(`${componentName}.component.spec.js`),
-            {
-                className,
-                componentName,
-                controllerName,
-                htmlElementName,
-                moduleName,
-                templateModuleName,
-                templateUrlPrefix
-            }
+            this.destinationPath(`${config.camelName}.component.spec.js`),
+            config
         );
     }
 
-    _writeDirective(componentName, controllerName, moduleName, templateUrlPrefix, templateModuleName, htmlElementName, className) {
+    _writeDirective(config) {
         // copy directive
         this.fs.copyTpl(
             this.templatePath(`directive.js`),
-            this.destinationPath(`${componentName}.directive.js`),
-            {
-                componentName,
-                controllerName,
-                moduleName,
-                templateUrlPrefix
-            }
+            this.destinationPath(`${config.camelName}.directive.js`),
+            config
         );
 
         // copy specs for directive
         this.fs.copyTpl(
             this.templatePath(`directive.spec.js`),
-            this.destinationPath(`${componentName}.directive.spec.js`),
-            {
-                className,
-                componentName,
-                controllerName,
-                htmlElementName,
-                moduleName,
-                templateModuleName,
-                templateUrlPrefix
-            }
+            this.destinationPath(`${config.camelName}.directive.spec.js`),
+            config
         );
     }
 
-    _writeController(componentName, controllerName, moduleName) {
+    _writeController(config) {
         // copy controller
         this.fs.copyTpl(
             this.templatePath(`controller.js`),
-            this.destinationPath(`${componentName}.controller.js`),
-            { componentName, controllerName, moduleName }
+            this.destinationPath(`${config.camelName}.controller.js`),
+            config
         );
 
         // copy specs for controller
         this.fs.copyTpl(
             this.templatePath(`controller.spec.js`),
-            this.destinationPath(`${componentName}.controller.spec.js`),
-            { componentName, controllerName, moduleName }
+            this.destinationPath(`${config.camelName}.controller.spec.js`),
+            config
         );
     }
 
-    _writeService(componentName, serviceName, moduleName) {
+    _writeService(config) {
         // copy service
         this.fs.copyTpl(
             this.templatePath(`service.js`),
-            this.destinationPath(`${componentName}.service.js`),
-            { componentName, moduleName, serviceName }
+            this.destinationPath(`${config.camelName}.service.js`),
+            config
         );
 
         // copy specs for service
         this.fs.copyTpl(
             this.templatePath(`service.spec.js`),
-            this.destinationPath(`${componentName}.service.spec.js`),
-            { componentName, moduleName, serviceName }
+            this.destinationPath(`${config.camelName}.service.spec.js`),
+            config
         );
     }
 
-    _writeModel(componentName, modelName, moduleName, model) {
+    _writeModel(config) {
         // copy model
         this.fs.copyTpl(
             this.templatePath(`model.js`),
-            this.destinationPath(`${componentName}.model.js`),
-            { componentName, model, modelName, moduleName }
+            this.destinationPath(`${config.camelName}.model.js`),
+            config
         );
 
         // copy specs for model
         this.fs.copyTpl(
             this.templatePath(`model.spec.js`),
-            this.destinationPath(`${componentName}.model.spec.js`),
-            { componentName, model, modelName, moduleName }
+            this.destinationPath(`${config.camelName}.model.spec.js`),
+            config
         );
     }
 
     _verify() {
         this.log('Verifying...');
-        if (existsSync(componentName)) {
+        if (existsSync(name)) {
             this.error('ERROR: The destination folder for the component already exists.');
         }
     }

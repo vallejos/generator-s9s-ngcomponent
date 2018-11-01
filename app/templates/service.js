@@ -1,45 +1,25 @@
-/**
- * <%= componentName %> Service
- * <%= componentName %> service implementation
- * 
+<%= titleName %>Service.$inject = [];
+
+ /**
+ * <%= titleName %> service implementation
+ * @constructor
  * @namespace Services
  */
-(() => {
-    'use strict';
+export default function <%= titleName %>Service() {
 
-    angular
-        .module('<%= moduleName %>')
-        .service('<%= serviceName %>', <%= serviceName %>);
+    // define the exported service methods/properties
+    return {
+        isExample
+    };
 
-    // inject service dependencies
-    <%= serviceName %>.$inject = [];
+    /////////////////
 
     /**
-     * <%= serviceName %> Service
-     * 
-     * @namespace <%= serviceName %>
-     * @memberOf Services
+     * Determines whether the service is an example or not
+     * @returns {boolean}
      */
-    function <%= serviceName %>() {
-
-        // define the exported service methods
-        return {
-            isExample: isExample
-        };
-
-        //////////////////////////////////////////////
-        // implement the methods below
-        //////////////////////////////////////////////
-
-        /**
-         * Just an example method
-         * 
-         * @returns {boolean}
-         */
-        function isExample() {
-            return false;
-        }
-
+    function isExample() {
+        return true;
     }
 
-})();
+}

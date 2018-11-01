@@ -1,21 +1,17 @@
+import controller from './<%= camelName %>.controller.js';
+import templateUrl from './<%= camelName %>.html';
+//import './<%= camelName %>.scss';
+
 /**
- * <%= componentName %> Component
- * <%= componentName %> component definition
- * 
+ * <%= camelName %> component definition
  * @namespace Components
  */
-(() => {
-    'use strict';
-
-    angular
-        .module('<%= moduleName %>')
-        .component('<%= componentName %>', {
-            bindings: {
-                // add attributes for the component here
-                myAttr: '<'
-            },
-            controller: '<%= controllerName %> as vm',
-            templateUrl: '<%= templateUrlPrefix %>/<%= componentName %>/<%= componentName %>.html'
-        });
-
-})();
+export default {
+    bindings: {
+        // add attributes for the component here
+        myAttr: '<'
+    },
+    controller,
+    controllerAs: 'vm',
+    templateUrl
+};

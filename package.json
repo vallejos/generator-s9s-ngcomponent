@@ -6,6 +6,7 @@
   "author": "Fabian Vallejos <vallejosfab@gmail.com>",
   "repository": "github:vallejos/generator-s9s-ngcomponent",
   "dependencies": {
+    "camelcase": "^5.0.0",
     "decamelize": "^2.0.0",
     "uppercamelcase": "^3.0.0",
     "yeoman-generator": "^3.1.1"

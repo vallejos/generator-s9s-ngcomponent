@@ -1,50 +1,49 @@
+import <%= titleName %>Module from './<%= camelName %>.module.js';
+
 /**
- * <%= serviceName %> Service Test
- * 
+ * <%= titleName %> service tests
  * @namespace Tests
  */
-describe('<%= serviceName %> Service', () => {
-    'use strict';
-
+describe('<%= titleName %> service', () => {
     // variables
-    let $q;
-    let <%= serviceName %>, SomeService;
+    let $q, <%= titleName %>, ExampleService1, ExampleService2;
 
     // mocks
-    const SomeServiceMock = {};
+    const ExampleService1Mock = {};
+    const ExampleService2Mock = {};
 
     // helper functions
-    function someHelp() {
+    function someHelper() {
         return;
     }
 
     // load required modules
-    beforeEach(module('<%= moduleName %>')); // our module
+    beforeEach(angular.mock.module(<%= titleName %>Module));
 
     // provide mocks and global constants
-    beforeEach(module('<%= moduleName %>', ($provide) => {
-        $provide.constant('Immutable', Immutable);
-        $provide.constant('_', _);
-        $provide.value('SomeService', SomeServiceMock);
+    beforeEach(angular.mock.module($provide => {
+        $provide.value('ExampleService1', ExampleService1Mock);
+        $provide.value('ExampleService2', ExampleService2Mock);
     }));
 
     // inject the providers for the service dependencies
-    beforeEach(inject(($injector) => {
+    beforeEach(angular.mock.inject($injector => {
         $q = $injector.get('$q');
-        SomeService = $injector.get('SomeService');
-        <%= serviceName %> = $injector.get('<%= serviceName %>');
+        <%= titleName %> = $injector.get('<%= titleName %>');
+        ExampleService1 = $injector.get('ExampleService1');
+        ExampleService2 = $injector.get('ExampleService2');
     }));
 
     // test the service
-    it('should exist', () => {
-        expect(<%= serviceName %>).toBeDefined();
+    it('exists', () => {
+        expect(<%= titleName %>).toBeDefined();
     });
 
     // test each service method
-    describe('isExample() method', () => {
-        it('should be defined', () => {
-            expect(<%= serviceName %>.isExample).not.toBeUndefined();
-            expect(typeof <%= serviceName %>.isExample).toEqual('function');
+    describe('isExample()', () => {
+        it('is defined', () => {
+            expect(<%= titleName %>.isExample).toBeDefined();
+            expect(<%= titleName %>.isExample).toEqual(jasmine.any(Function));
         });
     });
 

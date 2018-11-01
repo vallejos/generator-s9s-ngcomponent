@@ -1,55 +1,46 @@
+<%= titleName %>Controller.$inject = [
+    // inject depedencies here
+];
+
 /**
- * <%= componentName %> Controller
- * <%= componentName %> controller implementation
- * 
+ * <%= camelName %> controller implementation
+ * @constructor
  * @namespace Controllers
  */
-(() => {
-    'use strict';
+export default function <%= titleName %>Controller() {
+    // internal variables
+    const vm = this;
 
-    angular
-        .module('<%= moduleName %>')
-        .controller('<%= controllerName %>', <%= controllerName %>);
+    // public variables
+    vm.myVar = 'some value';
 
-    <%= controllerName %>.$inject = [
-        // inject depedencies here
-    ];
+    // public methods
+    vm.$onChanges = $onChanges;
+    vm.$onDestroy = $onDestroy;
+    vm.$onInit = $onInit;
+
+    /////////////////
 
     /**
-     * <%= componentName %> Controller
-     * 
-     * @constructor
+     * Handle controller initialization
      */
-    function <%= controllerName %>() {
-        // internal variables
-        const vm = this;
-
-        // public methods
-        vm.$onInit = onInit;
-        vm.$onChanges = onChanges;
-
-        // public variables
-        vm.myVar = 'some value';
-
-        /////////////////
-
-        /**
-         * Handle Controller Initialization
-         */
-        function onInit() {
-            // do something
-
-        }
-
-        /**
-         * Handle Updates
-         */
-        function onChanges() {
-            // do something
-
-        }
-
-
+    function $onInit() {
+        // do something
     }
 
-})();
+    /**
+     * Handle binding updates
+     * @param {Object} changes
+     */
+    function $onChanges(changes) {
+        // do something
+    }
+
+    /**
+     * Handle scope destruction
+     */
+    function $onDestroy() {
+        // do something
+    }
+
+}

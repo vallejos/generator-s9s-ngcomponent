@@ -1,61 +1,73 @@
+import <%= titleName %>Module from './<%= camelName %>.module.js';
+
 /**
- * <%= componentName %> Component Test
+ * <%= camelName %> component tests
  * @namespace Tests
  */
-describe('<%= componentName %> component', () => {
-    'use strict';
-
+describe('<%= camelName %> component', () => {
     // variables
-    let $compile, $rootScope, $scope, component;
+    let <%= !useS9SDependencies ? '$compile, ' : '' %>$scope, component;
 
     // mocks
-    const CCClusterServiceMock1 = {};
-    const CCClusterServiceMock2 = {};
+    const ExampleService1Mock = {};
+    const ExampleService2Mock = {};
 
     // helper functions
-    const getCompiledComponent = myAttr => {
-        $scope.myAttr = myAttr;
+    const getCompiledComponent = bindings => {
+        Object.assign($scope, bindings);
+        <%_ if (useS9SDependencies) { -%>
+        return CCTestH.getCompiledComponent(
+            '<<%= kebabName %> my-attr="myAttr"></<%= kebabName %>>',
+            $scope
+        );
+        <%_ } else { -%>
 
-        const element = angular.element('<<%= htmlElementName %> my-attr="myAttr"></<%= htmlElementName %>>');
-        component = $compile(element)($scope);
+        const compiled = $compile(
+            angular.element('<<%= kebabName %> my-attr="myAttr"></<%= kebabName %>>')
+        )($scope);
 
         $scope.$digest();
-        return component;
+        return compiled;
+        <%_ } -%>
     };
 
     // load required modules
-    beforeEach(module('<%= templateModuleName %>')); // templates
-    beforeEach(module('<%= moduleName %>')); // our module
+    beforeEach(angular.mock.module(<%= titleName %>Module));
 
     // provide mocks and global constants
-    beforeEach(module($provide => {
-        $provide.value('CCClusterService1', CCClusterServiceMock1);
-        $provide.constant('CCClusterService2', CCClusterServiceMock2);
+    beforeEach(angular.mock.module($provide => {
+        $provide.constant('ExampleService1', ExampleService1Mock);
+        $provide.value('ExampleService2', ExampleService2Mock);
     }));
 
     // inject the providers for the component controller dependencies
-    beforeEach(inject($injector => {
-        $rootScope = $injector.get('$rootScope');
+    beforeEach(angular.mock.inject($injector => {
+        <%_ if (!useS9SDependencies) { -%>
         $compile = $injector.get('$compile');
-
-        $scope = $rootScope.$new();
+        <%_ } -%>
+        $scope = $injector.get('$rootScope').$new();
     }));
 
     // get the compiled component
     beforeEach(() => {
-        const myAttr = 'some-value';
-        component = getCompiledComponent(myAttr);
+        component = getCompiledComponent({
+            myAttr: 'some-value'
+        });
     });
 
     // test the component
-    it('should compile the template', () => {
+    it('compiles the template', () => {
         expect(component.html()).toBeDefined();
         expect(component.html()).not.toBe(null);
         expect(component.html()).not.toEqual('');
     });
 
-    it('should show some html', () => {
-        expect(component.find('.<%= className %>').length).toBe(1);
+    it('shows some html', () => {
+        <%_ if (useS9SDependencies) { -%>
+        expect(component.find('.<%= kebabName %>')).toExist();
+        <%_ } else { -%>
+        expect(component.find('.<%= kebabName %>').length).toBe(1);
+        <%_ } -%>
     });
 
 });

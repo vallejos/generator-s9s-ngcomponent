@@ -1,30 +1,21 @@
+import templateUrl from './<%= camelName %>.html';
+//import './<%= camelName %>.scss';
+
 /**
- * <%= componentName %> Directive
- * <%= componentName %> directive implementation
- * 
+ * <%= camelName %> directive implementation
  * @namespace Directives
  */
-(() => {
-    'use strict';
+export default function <%= titleName %>Directive() {
+    const directive = {
+        restrict: 'EC', // change this as required
+        scope: {
+            // insert your directive's attributes here
+            myAttr: '&'
+        },
+        templateUrl,
+        controller: '<%= titleName %>Controller as vm',
+        bindToController: true
+    };
 
-    angular
-        .module('<%= moduleName %>')
-        .directive('<%= componentName %>', <%= componentName %>Directive);
-
-    function <%= componentName %>Directive() {
-        const directive = {
-            restrict: 'EC', // change this as required
-            scope: {
-                // insert your directive's attributes here
-                myAttr: '&'
-            },
-            templateUrl: '<%= templateUrlPrefix %>/<%= componentName %>/<%= componentName %>.html',
-            controller: '<%= controllerName %> as vm',
-            controllerAs: 'vm',
-            bindToController: true
-        };
-
-        return directive;
-    }
-
-})();
+    return directive;
+}
