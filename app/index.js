@@ -14,7 +14,6 @@ module.exports = class extends Generator {
 
         // This makes `componentName` a required argument.
         this.argument('name', { type: String, required: false });
-        this.argument('lang', { type: String, required: false });
         this.argument('ngApp', { type: String, required: false });
         this.argument('type', { type: String, required: false });
     }
@@ -41,13 +40,6 @@ module.exports = class extends Generator {
                 message : 'Component type:'
             },
             {
-                type    : 'list',
-                choices : ['es6', 'es5'],
-                name    : 'lang',
-                message : 'JavaScript version:',
-                store   : true
-            },
-            {
                 type    : 'input',
                 name    : 'ngApp',
                 message : 'AngularJS app name:',
@@ -68,7 +60,6 @@ module.exports = class extends Generator {
         ]);
 
         // remove unwanted blank spaces
-        answers.lang = answers.lang.toLowerCase().trim();
         answers.name = answers.name.trim();
         answers.ngApp = answers.ngApp.trim() || defaultAppName;
         answers.parent = answers.parent.trim();
@@ -76,12 +67,6 @@ module.exports = class extends Generator {
 
         // create destination folder
         this.destinationRoot(answers.name);
-
-        // check lang spec support
-        if (answers.lang !== 'es5' && answers.lang !== 'es6') {
-            // es5 and es6 supported
-            this.log(`ERROR: Unsupported JS Specification: ${answers.lang}`);
-        }
 
         const controllerName = upperCamelCase(`${answers.name}Controller`);
         const serviceName = upperCamelCase(`${answers.name}Service`);
@@ -97,38 +82,38 @@ module.exports = class extends Generator {
 
         switch (answers.type) {
             case TYPE_COMPONENT:
-                this._writeModule(answers.name, answers.lang, moduleName);
-                this._writeComponent(answers.name, answers.lang, controllerName, moduleName, templateUrlPrefix, templateModuleName, htmlElementName, className);
-                this._writeController(answers.name, answers.lang, controllerName, moduleName);
+                this._writeModule(answers.name, moduleName);
+                this._writeComponent(answers.name, controllerName, moduleName, templateUrlPrefix, templateModuleName, htmlElementName, className);
+                this._writeController(answers.name, controllerName, moduleName);
                 this._writeStyles(answers.name, className);
                 this._writeHtml(answers.name, className);
                 this._writeMD(answers.name);
                 break;
             case TYPE_MODULE:
-                this._writeModule(answers.name, answers.lang, moduleName);
+                this._writeModule(answers.name, moduleName);
                 this._writeMD(answers.name);
                 break;
             case TYPE_CONTROLLER:
-                this._writeModule(answers.name, answers.lang, moduleName);
-                this._writeController(answers.name, answers.lang, controllerName, moduleName);
+                this._writeModule(answers.name, moduleName);
+                this._writeController(answers.name, controllerName, moduleName);
                 this._writeMD(answers.name);
                 break;
             case TYPE_DIRECTIVE:
-                this._writeModule(answers.name, answers.lang, moduleName);
-                this._writeDirective(answers.name, answers.lang, controllerName, moduleName, templateUrlPrefix, templateModuleName, htmlElementName, className);
-                this._writeController(answers.name, answers.lang, controllerName, moduleName);
+                this._writeModule(answers.name, moduleName);
+                this._writeDirective(answers.name, controllerName, moduleName, templateUrlPrefix, templateModuleName, htmlElementName, className);
+                this._writeController(answers.name, controllerName, moduleName);
                 this._writeStyles(answers.name, className);
                 this._writeHtml(answers.name, className);
                 this._writeMD(answers.name);
                 break;
             case TYPE_SERVICE:
-                this._writeModule(answers.name, answers.lang, moduleName);
-                this._writeService(answers.name, answers.lang, serviceName, moduleName);
+                this._writeModule(answers.name, moduleName);
+                this._writeService(answers.name, serviceName, moduleName);
                 this._writeMD(answers.name);
                 break;
             case TYPE_MODEL:
-                this._writeModule(answers.name, answers.lang, moduleName);
-                this._writeModel(answers.name, answers.lang, modelName, moduleName, model);
+                this._writeModule(answers.name, moduleName);
+                this._writeModel(answers.name, modelName, moduleName, model);
                 this._writeMD(answers.name);
                 break;
             default:
@@ -160,18 +145,18 @@ module.exports = class extends Generator {
         );
     }
 
-    _writeModule(componentName, lang, moduleName) {
+    _writeModule(componentName, moduleName) {
         this.fs.copyTpl(
-            this.templatePath(`module.${lang}.js`),
+            this.templatePath(`module.js`),
             this.destinationPath(`${componentName}.module.js`),
             { componentName, moduleName }
         );
     }
 
-    _writeComponent(componentName, lang, controllerName, moduleName, templateUrlPrefix, templateModuleName, htmlElementName, className) {
+    _writeComponent(componentName, controllerName, moduleName, templateUrlPrefix, templateModuleName, htmlElementName, className) {
         // copy component
         this.fs.copyTpl(
-            this.templatePath(`component.${lang}.js`),
+            this.templatePath(`component.js`),
             this.destinationPath(`${componentName}.component.js`),
             {
                 componentName,
@@ -183,7 +168,7 @@ module.exports = class extends Generator {
 
         // copy specs for component
         this.fs.copyTpl(
-            this.templatePath(`component.${lang}.spec.js`),
+            this.templatePath(`component.spec.js`),
             this.destinationPath(`${componentName}.component.spec.js`),
             {
                 className,
@@ -197,10 +182,10 @@ module.exports = class extends Generator {
         );
     }
 
-    _writeDirective(componentName, lang, controllerName, moduleName, templateUrlPrefix, templateModuleName, htmlElementName, className) {
+    _writeDirective(componentName, controllerName, moduleName, templateUrlPrefix, templateModuleName, htmlElementName, className) {
         // copy directive
         this.fs.copyTpl(
-            this.templatePath(`directive.${lang}.js`),
+            this.templatePath(`directive.js`),
             this.destinationPath(`${componentName}.directive.js`),
             {
                 componentName,
@@ -212,7 +197,7 @@ module.exports = class extends Generator {
 
         // copy specs for directive
         this.fs.copyTpl(
-            this.templatePath(`directive.${lang}.spec.js`),
+            this.templatePath(`directive.spec.js`),
             this.destinationPath(`${componentName}.directive.spec.js`),
             {
                 className,
@@ -226,49 +211,49 @@ module.exports = class extends Generator {
         );
     }
 
-    _writeController(componentName, lang, controllerName, moduleName) {
+    _writeController(componentName, controllerName, moduleName) {
         // copy controller
         this.fs.copyTpl(
-            this.templatePath(`controller.${lang}.js`),
+            this.templatePath(`controller.js`),
             this.destinationPath(`${componentName}.controller.js`),
             { componentName, controllerName, moduleName }
         );
 
         // copy specs for controller
         this.fs.copyTpl(
-            this.templatePath(`controller.${lang}.spec.js`),
+            this.templatePath(`controller.spec.js`),
             this.destinationPath(`${componentName}.controller.spec.js`),
             { componentName, controllerName, moduleName }
         );
     }
 
-    _writeService(componentName, lang, serviceName, moduleName) {
+    _writeService(componentName, serviceName, moduleName) {
         // copy service
         this.fs.copyTpl(
-            this.templatePath(`service.${lang}.js`),
+            this.templatePath(`service.js`),
             this.destinationPath(`${componentName}.service.js`),
             { componentName, moduleName, serviceName }
         );
 
         // copy specs for service
         this.fs.copyTpl(
-            this.templatePath(`service.${lang}.spec.js`),
+            this.templatePath(`service.spec.js`),
             this.destinationPath(`${componentName}.service.spec.js`),
             { componentName, moduleName, serviceName }
         );
     }
 
-    _writeModel(componentName, lang, modelName, moduleName, model) {
+    _writeModel(componentName, modelName, moduleName, model) {
         // copy model
         this.fs.copyTpl(
-            this.templatePath(`model.${lang}.js`),
+            this.templatePath(`model.js`),
             this.destinationPath(`${componentName}.model.js`),
             { componentName, model, modelName, moduleName }
         );
 
         // copy specs for model
         this.fs.copyTpl(
-            this.templatePath(`model.${lang}.spec.js`),
+            this.templatePath(`model.spec.js`),
             this.destinationPath(`${componentName}.model.spec.js`),
             { componentName, model, modelName, moduleName }
         );
