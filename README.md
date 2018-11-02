@@ -1,100 +1,124 @@
+# generator-s9s-ngcomponent
+> An ES2015+ code generator for AngularJS 1.x
 
-# A basic component builder for Angular JS 1.x
-This yeoman generator will build different Angular components, creating a skeleton for the different files, and adding some basic JSDoc documentation blocks.
-Since version 0.0.6 from July 2018, I have added support for ES6 and the default since this version is ES6. ES5 can still be chosen using the `lang` parameter.
+Generate a module with a component, controller, directive, model or service.
 
-# Requirements
-This is a Yeoman generator. You need to install Yeoman, NodeJS and npm to install the generator and its dependencies. Make sure you have all installed globally.
+Features include:
+* AngularJS 1.5 components
+* ES2015 modules
+* JSDoc comments
 
-First, download and install NodeJS and npm. More information about NodeJS / npm: https://nodejs.org/
+ES2015 classes are not currently used, but likely will at some point in the future.
 
-Second, install Yeoman. More information about Yeoman: http://yeoman.io/
+**If you need ES5 support**, use version `0.0.7`.
 
-# Installation
+## Installation
+This generator requires that [yeoman](https://npmjs.com/yo) be installed (locally or globally, depending on your use case). With that, this generator should be installed to the same scope.
+```shell
+npm install generator-s9s-ngcomponent
 ```
-$ npm install -g generator-s9s-ngcomponent
+…or
+```shell
+npm install -g generator-s9s-ngcomponent
 ```
 
-# Usage
+## Usage
+```shell
+yo s9s-ngcomponent
 ```
-$ yo s9s-ngcomponent
-```
 
-# What does this generator do?
-This yeoman generator will build different Angular components, creating a skeleton for the different files, and adding some basic JSDoc documentation blocks.
+## Generated Code
 
-All the different Angular components will be defined by a module. The coding style used is the recommended for Angular 1 by John Papa (see: https://github.com/johnpapa/angular-styleguide/tree/master/a1), with the addition of Models and Angular 1.5 Components.
+### Dependencies
+Mandatory dependencies:
+* [Immutable.js](https://npmjs.com/immutable)
+* [Jasmine](https://npmjs.com/jasmine-core) or compatible
 
-In the different generated files you will find one or more example parameters, properties, injected services, etc. Please replace them according to your needs. You will also need to update the tests.
+Optional (S9S) dependencies:
+* [jasmine-jquery](https://npmjs.com/jasmine-jquery)
+* Internal S9S helpers (not currently open source)
 
-All unit tests use Jasmine. The configuration to run these tests is not included in the generator.
+### Necessary Configuration
+Tooling configuration is not included. You will need to configure:
+* Your module loader or bundler to support the importing of HTML and SCSS files.
+* Your test runner.
+
+### Result
+For directory and file names, "camelCase" was chosen over "PascalCase" and "kebab-case" for easy typing and autocomplete within a terminal.
+
+The code generated follows a combination of the following style guides:
+* https://github.com/johnpapa/angular-styleguide/tree/master/a1 (ES5)
+* https://github.com/rwwagner90/angular-styleguide-es6
+* https://github.com/toddmotto/angularjs-styleguide
 
 #### Models
-The Model for ES5 is an Angular Service that uses Immutable.js, which is injected by default in the Model service. Immutable.js is not included in the generator, you need to add it to your app to use the models. The model is just an Angular Service. By default, it will be an Immutable.Record. You need to change this based on your needs to other types.
+The model is a [`service`](https://docs.angularjs.org/guide/services) that uses Immutable.js, which is injected by default into the model. By default, it will be an `Immutable.Record`. You need to change this based on your needs.
 
-Includes:
-- module
-- model
-- model spec
-- readme file
+```
+└── exampleSomething/
+    ├── exampleSomething.module.js
+    ├── exampleSomething.model.js
+    ├── exampleSomething.model.spec.js
+    └── README.md
+```
 
 #### Controllers
-A generator for a Controller.
+A generator for a [`controller`](https://docs.angularjs.org/guide/controller).
 
-Includes:
-- module
-- controller
-- controller spec
-- readme file
+```
+└── exampleSomething/
+    ├── exampleSomething.module.js
+    ├── exampleSomething.controller.js
+    ├── exampleSomething.controller.spec.js
+    └── README.md
+```
 
 #### Components
-A generator for the new Angular 1.5 Component. It uses templateUrl and the $scope name is `vm` instead of the default `$ctrl` that Angular uses. Make sure you change the templatePreffix as required since the path may be different from project to project. The default value is the current path.
+A generator for a [`component`](https://docs.angularjs.org/guide/component). Per the style guides, the `$scope` name is `vm` instead of the default `$ctrl`.
 
-Includes:
-- module
-- component
-- component spec
-- controller
-- controller spec
-- readme file
-- html template
-- sass styles
+```
+└── exampleSomething/
+    ├── exampleSomething.module.js
+    ├── exampleSomething.component.js
+    ├── exampleSomething.component.spec.js
+    ├── exampleSomething.controller.js
+    ├── exampleSomething.controller.spec.js
+    ├── exampleSomething.html
+    ├── exampleSomething.scss
+    └── README.md
+```
 
 #### Services
-A generator for an Angular Factory.
+A generator for [`service`](https://docs.angularjs.org/guide/services).
 
-Includes:
-- module
-- readme file
-- service
-- service spec
+```
+└── exampleSomething/
+    ├── exampleSomething.module.js
+    ├── exampleSomething.service.js
+    ├── exampleSomething.service.spec.js
+    └── README.md
+```
 
 #### Directives
-Since Angular 1.5 it's better to use Components, but the generator supports Directives. Directives use templateUrl, a controller, and controllerAs syntax. Make sure you change the templatePreffix as required since the path may be different from project to project. The default value is the current path.
+Since AngularJS 1.5, it's better to use `component`, but generating [`directives`](https://docs.angularjs.org/guide/directive) is still supported for heavy DOM-related code.
 
-Includes:
-- module
-- directive
-- directive spec
-- controller
-- controller spec
-- readme file
-- html template
-- sass styles
+```
+└── exampleSomething/
+    ├── exampleSomething.module.js
+    ├── exampleSomething.directive.js
+    ├── exampleSomething.directive.spec.js
+    ├── exampleSomething.controller.js
+    ├── exampleSomething.controller.spec.js
+    ├── exampleSomething.html
+    ├── exampleSomething.scss
+    └── README.md
+```
 
 #### Modules
-It's possible to add a Module definition.
+A generator for an empty [`module`](https://docs.angularjs.org/guide/module).
 
-Includes:
-- module
-- readme file
-
-# Credits
-Fabian Vallejos <vallejosfab@gmail.com>
-
-Twitter: https://twitter.com/vallejosfab
-
-Blog: http://www.fabianvallejos.com/
-
-# Licence
-MIT
+```
+└── exampleSomething/
+    ├── exampleSomething.module.js
+    └── README.md
+```
