@@ -12,7 +12,7 @@ module.exports = class extends Generator {
 
         // This makes `componentName` a required argument.
         this.argument('name', { type: String, required: false });
-        this.argument('ngApp', { type: String, required: false });
+        this.argument('ccApp', { type: String, required: false });
         this.argument('type', { type: String, required: false });
     }
 
@@ -33,7 +33,7 @@ module.exports = class extends Generator {
             TYPE_SERVICE
         };
 
-        const defaultAppName = 'ngApp';
+        const defaultAppName = 'ccApp';
         const defaultPrefix = 'my';
 
         const answers = await this.prompt([
@@ -65,7 +65,7 @@ module.exports = class extends Generator {
             },
             {
                 type    : 'input',
-                name    : 'ngApp',
+                name    : 'ccApp',
                 message : 'AngularJS app name:',
                 default : defaultAppName,
                 filter  : value => value.trim() || defaultAppName
@@ -78,7 +78,7 @@ module.exports = class extends Generator {
             }
         ]);
 
-        const {dependencies, name, ngApp, parent, prefix, type} = answers;
+        const {dependencies, name, ccApp, parent, prefix, type} = answers;
 
         if (!name) {
             this.log('ERROR: name must not be empty');
@@ -92,7 +92,7 @@ module.exports = class extends Generator {
             ...types,
             camelName,
             kebabName,
-            moduleName: parent ? `${ngApp}.${parent}.${camelName}` : `${ngApp}.${camelName}`,
+            moduleName: parent ? `${ccApp}.${parent}.${camelName}` : `${ccApp}.${camelName}`,
             prefix,
             titleName: name,
             type,
