@@ -1,7 +1,7 @@
 {
   "name": "generator-s9s-ngcomponent",
   "description": "S9S yeoman generator for Angular components",
-  "version": "0.0.7",
+  "version": "2.0.0",
   "license": "MIT",
   "author": "Fabian Vallejos <vallejosfab@gmail.com>",
   "repository": "github:vallejos/generator-s9s-ngcomponent",
