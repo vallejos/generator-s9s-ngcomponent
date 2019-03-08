@@ -1,6 +1,8 @@
-@import 'base';
+<% if (useS9SDependencies) { -%>
+@import '~extCss/base';
 
-// styles for <%= componentName %> component
-.<%= className %> {
+<% } -%>
+// styles for <%= camelName %> <%= type %>
+.<%= kebabName %> {
 
 }
