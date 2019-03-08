@@ -10,7 +10,7 @@ Features include:
 
 ES2015 classes are not currently used, but likely will at some point in the future.
 
-**If you need ES5 support**, use version `0.0.7`.
+**If you need ES5 support**, use version `1.0.0`.
 
 ## Installation
 This generator requires that [yeoman](https://npmjs.com/yo) be installed (locally or globally, depending on your use case). With that, this generator should be installed to the same scope.
