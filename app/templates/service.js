@@ -1,6 +1,6 @@
 <%= titleName %>Service.$inject = [];
 
- /**
+/**
  * <%= titleName %> service implementation
  * @constructor
  * @namespace Services
